@@ -1,28 +1,33 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import Link from "next/link";
 
-export default function Home() {
+import styles from "../styles/Home.module.css";
+
+export default function Home({ posts }) {
   return (
     <div className={styles.container}>
-      <Head>
-        <title>Phone Heaven</title>
-        <meta name="description" content="Bibliotheque d'informations sur les modèles de téléphones et leurs spécifications" />
-        <link rel="icon" href="/smartphone.png" />
-      </Head>
-
-      <header>
-        <div>
-        </div>
-      </header>
-
-      <main className={styles.main}>
-       
-      </main>
-
-      <footer className={styles.footer}>
-      <a href="https://www.flaticon.com/free-icons/smartphone" title="smartphone icons">Smartphone icons created by Good Ware - Flaticon</a>
-      </footer>
+      {posts.map((element) => {
+        return (
+          <div key={element.id} className={styles.phoneDiv}>
+            <h3>{element.name}</h3>
+            <p>{element.released_at}</p>
+            <p>{element.battery_size}</p>
+            <p>{element.battery_type}</p>
+            <p>{element.body}</p>
+            <Link href={"/details/" + element.id}>Voir détails</Link>
+          </div>
+        );
+      })}
     </div>
-  )
+  );
+}
+
+export async function getStaticProps() {
+  const res = await fetch("http://localhost:3000/api/hello");
+  const posts = await res.json();
+
+  return {
+    props: {
+      posts,
+    },
+  };
 }
